@@ -1,0 +1,5 @@
+*.pyc
+.vscode/
+.git/
+etc/config.json
+deployment

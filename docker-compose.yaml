@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  app:
+    image: py-process-mgr:${IMG_TAG:-latest}
+    build:
+      context: .
+      dockerfile: ./docker/dockerfile      
+      args:
+        # Set USER_GID and USER_UID if you want to build your own docker image
+        # NOTE: Don't use 'environment variable'; e.g. UID=$(id -u). It is recommend to hardcode the GID and UID if you are willing to release the image.
+        # NOTE: The docker image shall have label to determine the GID and UID value. i.e. CMD="docker inspect <docker image> |grep USER_GID_UID"
+        GID: 1000
+        UID: 1000
+    user: 1000:1000 # This value should be matched to $GID and $UID
+    network_mode: "host"
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    environment:
+      - DISPLAY
+      - XAUTHORITY=/home/user/.Xauthority
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.bash_history:/home/user/.bash_history
+      - ${CONFIG_PATH:-./config}:/home/user/config
+      - ${WORKSPACE_PATH:-./workspace}:/home/user/workspace
+      - ${LOGS_PATH:-./logs}:/home/user/logs
+      - ~/.Xauthority:/home/user/.Xauthority
+    command: sh -c "export PYTHONPATH=$${PYTHONPATH}:/home/user/workspace-rel:; cd /home/user/workspace-rel; python launcher.py -c '../config/common.cfg,../config/drone-rel.cfg'"
+
+
+# Commands
+# - Prepare logs path  > sudo chown -R ${GID}:${UID} ${LOGS_PATH}"
+
+# - Build:             > docker-compose build
+# - Build Clean:       > docker-compose build --no-cache
+# - Build with tag:    > IMG_TAG=$(git tag) docker-compose build
+
+# - Run Dev:           > docker-compose run --rm app bash
+# - Run Rel with rm:   > docker-compose run --rm app 
+# - Build and Run Rel: > docker-compose up --build
+
+# - Run Rel:           > LOGS_PATH=${LOGS_PATH} CONFIG_PATH=${CONFIG_PATH} docker-compose up 
+# - Stop Rel:          > docker-compose down

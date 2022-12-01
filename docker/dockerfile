@@ -1,0 +1,57 @@
+# Arguments
+
+## DONOT modify this file. The GID and UID values should be modified in docker-compose.yaml
+ARG GID=1001 
+ARG UID=1001
+
+#========================
+FROM python:3.10-slim-bullseye
+ARG GID
+ARG UID
+
+LABEL USER_GID_UID="$GID:$UID"
+
+# Install using apt-get
+RUN apt-get update 
+
+#RUN apt-get install -y --no-install-recommends apt-utils
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends --fix-missing \
+  net-tools iputils-ping
+
+RUN apt-get install -y \
+  gcc pkg-config libcairo2-dev python3-tk \
+  tk-dev libpng-dev libffi-dev dvipng texlive-latex-base \
+  mosquitto-clients
+
+RUN rm -rf /var/lib/apt/lists/* 
+
+# Setup user
+RUN groupadd -g $GID user
+RUN useradd -m user -u $GID -g $UID
+
+USER user
+WORKDIR /home/user
+ENV PATH="/home/user:/home/user/.local/bin:${PATH}"
+
+# Install PIP modules
+#RUN pip3 install --user --no-cache-dir numpy
+#COPY --chown=user requirements.txt requirements.txt
+#RUN pip3 install --user --no-cache-dir -r requirements.txt 
+RUN pip3 install --no-cache-dir numpy
+COPY --chown=user requirements.txt requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt 
+
+
+# Create logs folder
+RUN mkdir -p logs
+RUN chown user:user logs
+
+# Set environment
+ENV PYTHONPATH "${PYTHONPATH}:/home/user/workspace/research:/home/user/workspace:"
+
+# Copy workspace code
+COPY --chown=user ./workspace ./workspace-rel
+
+# Prepare dev environment: If docker runs with bash, go to workspace dir
+WORKDIR /home/user/workspace
+
