@@ -1,6 +1,4 @@
-import multiprocessing
-from typing import List
-from workspace.py_proc_group import PyProcGroup
+from py_proc_group import PyProcGroup
 
 
 class PyProcMgr:
