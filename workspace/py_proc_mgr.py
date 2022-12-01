@@ -1,3 +1,4 @@
+import multiprocessing
 from py_proc_group import PyProcGroup
 
 
@@ -15,7 +16,7 @@ class PyProcMgr:
   def set(self, proc_group: PyProcGroup):
     self.proc_group = proc_group
 
-  def run(self):
+  def run(self, count: int = -1):
     if self.active == True:
       return 
 
@@ -23,7 +24,13 @@ class PyProcMgr:
       return
 
     self.active = True
-    self.proc_group.run()
+
+    with multiprocessing.Manager() as proc_mgr:
+      # Define shared namespace
+      namespace = proc_mgr.Namespace(
+        digest = 123
+      )
+      self.proc_group.start(namespace)
 
 
   def stop(self):
