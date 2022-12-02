@@ -1,3 +1,4 @@
+import signal
 import time
 from py_proc_group import PyProc, PyProcGroup_Concurrent, PyProcGroup_Sequential
 from py_proc_mgr import PyProcMgr
@@ -10,13 +11,13 @@ class MyTask1(PyProc):
 
   def task(self, shared_ns):
     print(f"{self.__class__.__name__}: Task started")
-    time.sleep(3.0)
+    time.sleep(2.0)
     print(f"{self.__class__.__name__}: Task Running - 1")
-    time.sleep(3.0)
+    time.sleep(2.0)
     print(f"{self.__class__.__name__}: Task Running - 2")
-    time.sleep(3.0)
+    time.sleep(2.0)
     print(f"{self.__class__.__name__}: Task Running - 3")
-    time.sleep(3.0)
+    time.sleep(2.0)
     print(f"{self.__class__.__name__}: Task ended")
 
 
@@ -78,6 +79,8 @@ class MyTask5(PyProc):
 
 class Main:
   def __init__(self):
+    signal.signal(signal.SIGINT, self._signal_handle_sigint)
+    
     self.proc_mgr = PyProcMgr()
 
     my_task1 = MyTask1()
@@ -111,7 +114,23 @@ class Main:
       ])
     )
 
+    self.proc_mgr.set(
+      PyProcGroup_Concurrent([
+        my_task1,
+        PyProcGroup_Sequential([
+          my_task2,
+          my_task3
+        ]),
+      ])
+    )
+
     self.proc_mgr.run()
+
+  ## Handle Signal INT
+  def _signal_handle_sigint(self, signum, frame):
+    print(f"WARNING>>>>>>>>>>>>>>>>>> User Abort Requested")
+    #self.proc_mgr.stop()
+    self.proc_mgr.kill()
 
 if __name__ == "__main__":
   Main()

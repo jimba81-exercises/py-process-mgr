@@ -9,12 +9,17 @@ class PyProcGroup(ABC):
     self.proc_items = proc_items
 
   @abstractmethod
-  def start(self, shared_np) -> None:
+  def start(self, shared_ns) -> None:
     pass
 
   @abstractmethod
   def join(self) -> None:
-    pass  
+    pass
+
+  def kill(self) -> None:
+    for proc_idx in range(len(self.proc_items)):
+      proc_item = self.proc_items[proc_idx]
+      proc_item.kill()
 
 
 # Process Item
@@ -24,17 +29,15 @@ class PyProcGroup_Sequential(PyProcGroup):
   def __init__(self, proc_items: List[ProcItem]):
     super().__init__(proc_items)
 
-  def start(self, shared_np) -> None:
-    print(f"{self.__class__.__name__}: start(): START")    
+  def start(self, shared_ns) -> None:
+    if shared_ns.active_requested == False:
+      return
 
     for proc_idx in range(len(self.proc_items)):
       proc_item = self.proc_items[proc_idx]
-      proc_item.start(shared_np)
+      proc_item.start(shared_ns)
       # Current group is sequential type. Wait for each process to complete
       proc_item.join()
-
-    print(f"{self.__class__.__name__}: start(): END")    
-
 
   def join(self) -> None:
     # Current group is sequential type. Nothing to wait.
@@ -45,17 +48,14 @@ class PyProcGroup_Concurrent(PyProcGroup):
   def __init__(self, proc_items: List[ProcItem]):
     super().__init__(proc_items)
 
-  def start(self, shared_np) -> None:
-    print(f"{self.__class__.__name__}: start(): START")    
+  def start(self, shared_ns) -> None:
+    if shared_ns.active_requested == False:
+      return
 
     # Current group is concurrent type. Start all processes concurrently
     for proc_idx in range(len(self.proc_items)):
       proc_item = self.proc_items[proc_idx]
-      proc_item.start(shared_np)
-
-
-
-    print(f"{self.__class__.__name__}: start(): END")    
+      proc_item.start(shared_ns)
 
 
   def join(self) -> None:
