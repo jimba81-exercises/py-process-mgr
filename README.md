@@ -38,11 +38,11 @@ class MyProcess(PyProc):
 - For `PyProcGroup_Sequential`, `PyProcGroup_Concurrent`, it can have nested processes or process groups.
 
 ```python
-my_task1 = MyTask()
-my_task2 = MyTask()
-my_task3 = MyTask()
-my_task4 = MyTask()
-my_task5 = MyTask()
+my_task1 = MyProcess()
+my_task2 = MyProcess()
+my_task3 = MyProcess()
+my_task4 = MyProcess()
+my_task5 = MyProcess()
 
 # Example1: Add one process
 proc_mgr.set(my_task1)
