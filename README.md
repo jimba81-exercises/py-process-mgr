@@ -93,3 +93,18 @@ proc_mgr.stop()
 proc_mgr.kill()
 ```
 
+<br>
+
+## 3. TODO
+### 3.1. Concurrent Processes With No-Binding
+- Processes in the `PyProcGroup_Concurrent()` run concurrently and may complete in different time. However, the early completed one has to wait (*binding at the end*) till remaining processes to complete. This is inevitable for **`nested`** process groups.
+- We may introduce `Concurrent Processes with no-binding` to the concurrent processes only if:
+  - Processes are set inside `PyProcGroup_Concurrent()` class
+  - The processes are the root processes (highest level of the nested groups)
+  - New argument in `PyProcMgr.start()`
+
+### 3.2. Namespace Dataclass
+- Introduce `Namespace Dataclass` to write strong type support for accessing namespace data object.
+
+
+<br>
