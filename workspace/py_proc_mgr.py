@@ -30,14 +30,10 @@ class PyProcMgr:
       active_requested = False
     )
 
-  def reset(self):
-    if self.active:
-      return
-
   def set(self, proc_item: ProcItem):
     self.proc_item = proc_item
 
-  def run(self, count: int = -1):
+  def start(self, count: int = -1):
     if self.active == True:
       return 
 
