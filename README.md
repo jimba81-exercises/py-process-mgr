@@ -20,7 +20,7 @@ class MyProcess(PyProc):
 
   def task(self, shared_ns, count: int, level: int) -> None:
   """!
-  @brief This is MUST HAVE and the task Work method
+  @brief This is MUST HAVE and the Task Work Method
   @param shared_ns: Shared namespace with all processes
   @param count: Number of count that the task has been executed
   @param level: Task group level (root=0)
