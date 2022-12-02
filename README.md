@@ -78,10 +78,13 @@ proc_mgr.namespace.test_counter = 0
 proc_mgr.namespace.some_data = [1,2,3,4]
 
 # Option1: Start and run the tasks for 2 times
-proc_mgr.start(2)
+proc_mgr.start(count=2)
 
 # Option2: Start and run the tasks forever
 proc_mgr.start()
+
+# Option3: Start and run the tasks forever in background thread (Non-blocking)
+proc_mgr.start(run_background=True)
 ```
 
 ### 2.5. Stop

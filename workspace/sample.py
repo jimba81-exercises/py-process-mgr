@@ -151,10 +151,7 @@ class Main:
     )
 
     self.proc_mgr.namespace.test_counter = 0
-    self.proc_mgr.start()
-
-
-    print("I'm here becuase proc_mgr.start() is NOT BLOCKING")
+    self.proc_mgr.start(run_background=False)
 
   ## Handle Signal INT
   def _signal_handle_sigint(self, signum, frame):
