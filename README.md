@@ -106,5 +106,7 @@ proc_mgr.kill()
 ### 3.2. Namespace Dataclass
 - Introduce `Namespace Dataclass` to write strong type support for accessing namespace data object.
 
+### 3.3. Non-blocking PyProcMgr.start()
+- Make the `PyProcMgr.start()` non-blocking so any research purpose code block can still be executed.
 
 <br>

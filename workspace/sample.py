@@ -153,6 +153,9 @@ class Main:
     self.proc_mgr.namespace.test_counter = 0
     self.proc_mgr.start()
 
+
+    print("I'm here becuase proc_mgr.start() is NOT BLOCKING")
+
   ## Handle Signal INT
   def _signal_handle_sigint(self, signum, frame):
     print(f"WARNING>>>>>>>>>>>>>>>>>> User Abort Requested")
