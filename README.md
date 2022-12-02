@@ -72,6 +72,14 @@ proc_mgr.set(
 ```  
 
 ### 2.4. Run
+
+#### 2.4.1. Run Options:
+- `count_max`: number of count that each task shall be executed. If **-1**, tasks run forever *(Default=-1)*
+- `run_background`: Run tasks in background thread *(Default=False)*
+- `skip_binding`: If root group is `PyProcGroup_Concurrent` and `skip_binding` is set to False, each task shall NOT wait for other task to complete in each cycle. *(Default=False)*
+
+#### 2.4.2. Examples:
+
 ```python
 # Set namespace
 proc_mgr.namespace.test_counter = 0
@@ -89,7 +97,6 @@ proc_mgr.start(run_background=True)
 # Option4: Start and run the tasks forever without binding (No wait for other process to complete)
 #          For skip binding to work, root group type SHOULD be PyProcGroup_Concurrent
 proc_mgr.start(skip_binding=True)
-
 ```
 
 ### 2.5. Stop
