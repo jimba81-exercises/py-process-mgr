@@ -6,14 +6,14 @@ class PyProc(ABC):
     self.process = None
 
   @abstractmethod
-  def task(self, shared_ns) -> None:
+  def task(self, shared_ns, count, level) -> None:
     pass
 
-  def start(self, shared_ns) -> None:
+  def start(self, shared_ns, count: int, level: int) -> None:
     if shared_ns.active_requested == False:
       return
 
-    self.process = multiprocessing.Process(target=self.task, args=(shared_ns,))
+    self.process = multiprocessing.Process(target=self.task, args=(shared_ns,count,level))
     self.process.start()
 
   def join(self) -> None:

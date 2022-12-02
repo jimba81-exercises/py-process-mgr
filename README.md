@@ -85,6 +85,11 @@ proc_mgr.start()
 
 # Option3: Start and run the tasks forever in background thread (Non-blocking)
 proc_mgr.start(run_background=True)
+
+# Option4: Start and run the tasks forever without binding (No wait for other process to complete)
+#          For skip binding to work, root group type SHOULD be PyProcGroup_Concurrent
+proc_mgr.start(skip_binding=True)
+
 ```
 
 ### 2.5. Stop
@@ -99,17 +104,8 @@ proc_mgr.kill()
 <br>
 
 ## 3. TODO
-### 3.1. Concurrent Processes With No-Binding
-- Processes in the `PyProcGroup_Concurrent()` run concurrently and may complete in different time. However, the early completed one has to wait (*binding() is called after all processes are started*) till remaining processes to be completed. This is inevitable for **`nested`** process groups. (You really want the group to be completed if the group is a sub-group of other group)
-- We may introduce `Concurrent Processes with no-binding` to the concurrent processes only if:
-  - Processes are set inside `PyProcGroup_Concurrent()` class
-  - The processes are the root processes (highest level of the nested groups)
-  - New argument in `PyProcMgr.start()`
 
-### 3.2. Namespace Dataclass
+### 3.1. Namespace Dataclass
 - Introduce `Namespace Dataclass` to write strong type support for accessing namespace data object.
-
-### 3.3. Non-blocking PyProcMgr.start()
-- Make the `PyProcMgr.start()` non-blocking so any research purpose code block can still be executed.
 
 <br>

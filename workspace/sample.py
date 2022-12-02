@@ -11,17 +11,17 @@ class MyTask1(PyProc):
     super().__init__()
     ...
 
-  def task(self, shared_ns):
+  def task(self, shared_ns, count, level):
     #lock = multiprocessing.Lock()
     with multiprocessing.Lock():
       shared_ns.test_counter = shared_ns.test_counter + 1
       print(f"{self.__class__.__name__}: shared_ns={shared_ns}")
 
-    print(f"{self.__class__.__name__}: Task started")
-    time.sleep(0.7)
-    print(f"{self.__class__.__name__}: Task Running - 1")
-    time.sleep(0.7)
-    print(f"{self.__class__.__name__}: Task ended")
+    print(f"{self.__class__.__name__}[{count}]: Task started")
+    time.sleep(0.2)
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 1")
+    time.sleep(0.2)
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task ended")
 
 
 class MyTask2(PyProc):
@@ -29,71 +29,71 @@ class MyTask2(PyProc):
     super().__init__()
     ...
 
-  def task(self, shared_ns):
+  def task(self, shared_ns, count, level):
     #lock = multiprocessing.Lock()
     with multiprocessing.Lock():
       shared_ns.test_counter = shared_ns.test_counter + 1
       print(f"{self.__class__.__name__}: shared_ns={shared_ns}")
-    print(f"{self.__class__.__name__}: Task started")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task started")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task Running - 1")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 1")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task Running - 2")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 2")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task ended")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task ended")
 
 class MyTask3(PyProc):
   def __init__(self):
     super().__init__()
     ...
 
-  def task(self, shared_ns):
+  def task(self, shared_ns, count, level):
     lock = multiprocessing.Lock()
     with lock:
       shared_ns.test_counter = shared_ns.test_counter + 1
       print(f"{self.__class__.__name__}: shared_ns={shared_ns}")    
-    print(f"{self.__class__.__name__}: Task started")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task started")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task Running - 1")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 1")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task Running - 2")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 2")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task ended")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task ended")
 
 class MyTask4(PyProc):
   def __init__(self):
     super().__init__()
     ...
 
-  def task(self, shared_ns):
+  def task(self, shared_ns, count, level):
     lock = multiprocessing.Lock()
     with lock:
       shared_ns.test_counter = shared_ns.test_counter + 1
       print(f"{self.__class__.__name__}: shared_ns={shared_ns}")    
-    print(f"{self.__class__.__name__}: Task started")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task started")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task Running - 1")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 1")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task Running - 2")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 2")
     time.sleep(0.5)
-    print(f"{self.__class__.__name__}: Task ended")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task ended")
 
 class MyTask5(PyProc):
   def __init__(self):
     super().__init__()
 
-  def task(self, shared_ns):
+  def task(self, shared_ns, count, level):
     lock = multiprocessing.Lock()
     with lock:
       shared_ns.test_counter = shared_ns.test_counter + 1
       print(f"{self.__class__.__name__}: shared_ns={shared_ns}")    
-    print(f"{self.__class__.__name__}: Task started")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task started")
     time.sleep(0.2)
-    print(f"{self.__class__.__name__}: Task Running - 1")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 1")
     time.sleep(0.2)
-    print(f"{self.__class__.__name__}: Task Running - 2")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task Running - 2")
     time.sleep(0.2)
-    print(f"{self.__class__.__name__}: Task ended")
+    print(f"{self.__class__.__name__}[{count},level={level}]: Task ended")
 
 class Main:
   def __init__(self):
@@ -146,12 +146,17 @@ class Main:
     self.proc_mgr.set(
       PyProcGroup_Concurrent([
         my_task1,
-        my_task2,
+        PyProcGroup_Sequential([
+          my_task2,
+          my_task3
+        ]),
       ]),
     )
 
     self.proc_mgr.namespace.test_counter = 0
-    self.proc_mgr.start(run_background=False)
+    self.proc_mgr.start(run_background=False, count_max=-1, skip_binding=True)
+    
+    print(f"See this when Proc Mgr is non-blocking..")
 
   ## Handle Signal INT
   def _signal_handle_sigint(self, signum, frame):
