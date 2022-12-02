@@ -1,7 +1,7 @@
 # PY Process Manager Library
 
 ## 1. Purpose
-- Provides interface to manages processes excuted sequential or concurrently
+- Provides interface to manage processes executed single, sequential or concurrently
 
 <br>
 
@@ -97,7 +97,7 @@ proc_mgr.kill()
 
 ## 3. TODO
 ### 3.1. Concurrent Processes With No-Binding
-- Processes in the `PyProcGroup_Concurrent()` run concurrently and may complete in different time. However, the early completed one has to wait (*binding at the end*) till remaining processes to complete. This is inevitable for **`nested`** process groups.
+- Processes in the `PyProcGroup_Concurrent()` run concurrently and may complete in different time. However, the early completed one has to wait (*binding() is called after all processes are started*) till remaining processes to be completed. This is inevitable for **`nested`** process groups. (You really want the group to be completed if the group is a sub-group of other group)
 - We may introduce `Concurrent Processes with no-binding` to the concurrent processes only if:
   - Processes are set inside `PyProcGroup_Concurrent()` class
   - The processes are the root processes (highest level of the nested groups)
