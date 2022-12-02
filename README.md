@@ -77,7 +77,10 @@ proc_mgr.set(
 proc_mgr.namespace.test_counter = 0
 proc_mgr.namespace.some_data = [1,2,3,4]
 
-# Start
+# Option1: Start and run the tasks for 2 times
+proc_mgr.start(2)
+
+# Option2: Start and run the tasks forever
 proc_mgr.start()
 ```
 
@@ -89,3 +92,4 @@ proc_mgr.stop()
 # Option2: Kill
 proc_mgr.kill()
 ```
+
